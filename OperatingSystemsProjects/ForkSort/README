@@ -1,0 +1,36 @@
+Operating Systems Assignment No. 2
+
+Compilation instructions:
+    $make all (in directory OS_Project2)
+
+Assumptions/Explanations:
+    -Signals are handled using sigaction() because of the convenience that SA_RESTART and SA_NODEFER
+    provide.
+    -Apart from the requested by the assignment usage, signals (in particular SIGUSR1) are used when
+    an error has occurred on a child process and the rest of the children need to forcefully exit.
+    -Error messages for errors that have occurred in a child process are passed through the pipes to their
+    parents.
+    -The first error to have occurred is the one to be reported at the end of the program. Except if
+    a child process could not write to its parent pipe, so this is the error that gets reported eventually.
+    -Arguments' correctness is checked only on the first process (that is mysort) where the arguments are given 
+    by the user from the terminal. At the child processes (coach and sorter) the arguments are supposed to
+    be right, since the only purpose of these programs is to be used with an exec*() that is rightly set up.
+    -If a coach or a sorter stumbles upon an error, then they carefully deallocate the memory they have taken up
+    and exit with exitcode == EXIT_FAILURE, and this is the way for their parent process to know if
+    an error occurred.
+    -The times that the program prints at the end are the real-time run times and not CPU times.
+    -There is only one sorter program that uses the code from heapsort.c and quicksort.c
+    and not one sorter for each sorting algorithm.
+    -If the user at the start of the program asks for 2 or more coaches to sort the same column, then only the first
+    of them shall exist. The others will be ignored.
+
+    Important:
+    -The way a coach process gets the results from the sorters is somewhat different from the way the assignment
+    describes. The reason behind this was that if a sorter had many records to sort (for example, if the only sorter
+    below coach 1 was given the entire Records100000.bin to sort, meaning 100000 * sizeof(Record) = 10400000 bytes)
+    the pipe would fill up and write operations would block, so the coach has to read records before the sorters
+    finish their work.
+
+Sources:
+    -Algorithms of heapsort and quicksort adjusted versions of the respective algorithms 
+    found in the book "Introduction to algorithms" by Cormen, Leiserson, Rivest and Stein.

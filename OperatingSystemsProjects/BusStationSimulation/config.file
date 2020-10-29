@@ -1,0 +1,16 @@
+Station Manager Executable -> ./bin/stationManager
+Comptroller Executable -> ./bin/comptroller
+Bus Executable -> ./bin/bus
+Number of buses -> 15
+Buses creation timeout -> 0
+Min Park Time -> 2
+Max Park Time -> 10
+Min Capacity -> 30
+Max Capacity -> 100
+Min Maneuver Time -> 1
+Max Maneuver Time -> 10
+VOR parking spots -> 2
+ASK parking spots -> 2
+PEL parking spots -> 4
+Statistics Period -> 5
+Status Period -> 5

@@ -1,0 +1,63 @@
+Operating Systems Project 1
+
+Firstly, the program reads the input parameters, as per instructions, through the run() function from 
+the file run.c . 
+Then, it opens the input file that contains the registry and creates the Red-Black tree.
+Afterwards, the Bloom Filter gets created by traversing on the RBT. The Filter's size gets decided by
+the bloom_comp_size() function.
+The data structure I chose for the PostalCodes is a Red-Black Tree containing the post codes and a
+pointer to a linked list. Each node if this linked list contains a pointer to a node of the voters'
+RBT.
+
+The order in which a new Voter gets added to the data structures is the following:
+    -a new struct Voter instance is created and it contains every item of the record
+    except for the Post Code.
+    -the Voter gets added to the Red-Black Tree, only if their ID is not already in the tree
+    -if the postal code of the new voter is already in the PostalCodesRBT, then the voter
+    gets the pointer to the node of the tree. Otherwise, a new struct PostalCode instance is created
+    and it gets added to the PostalCodesRBT. Eventually, the Voter gets a pointer to the new PostalCode
+    instance.
+
+The data structures are implemented in the files:
+    -rbt.h/rbt.c (Red-Black Tree)
+    -bloom.h/bloom.c (Bloom Filter)
+    -connlist.h/connlist.c (Linked List)
+
+The project-specific data structures are implemented in the files:
+    -postalcodes.h/postalcodes.c (Postal Codes Red-Black Tree)
+    -votersbloom.h/votersbloom.c (Voters Bloom Filter)
+    -voterslist.h/voterslist.c (Voters Linked List for the PostalCodesRBT structure)
+    -votersrbt.h/votersrbt.c (Voter Red-Black Tree that the assignment asks explicitly)
+
+The files mentioned above contain wrapper functions for the data structures and some other functions
+that help specifically for this project.
+
+Important notes:
+    -The input file cannot be empty. This choice was made mainly in order to have a 
+    right-sized bloom filter at the start of the program.
+    -The lrb function does not print all of the record. It only prints a success or fail message,
+    the same way the lbf command does.
+    -All the messages from the program are printed in the stdout, except for the 
+    errors caused by misuse that get printed to the stderr.
+    -At the end of the program, the registry is printed in an ascending order (of IDs) to the
+    output file selected by the user at the start of the program. This file gets overwriten, if it
+    contained any data.
+    -The numbers needed for the vote and votedperpc commands are all numbers that are computed at the
+    start of the program and get updated, if needed(ins/delete). This enables the program to be faster, because
+    it doesn't count the number of those who have voted at request every time.
+    -If a voter gets deleted from the registry, their info gets purged from every structure except for
+    the Bloom Filter.
+    -The registry file and the file used in the load command are expected to be righly formatted
+    and contain all items of a record. No checks are made against this, because the code would get
+    cluttered with easy but repetitive input checks.
+    -Checks if a command's argument exists are made. (e.g. lbf KEY)
+
+Hash functions sources:
+    -Murmur Hash: https://en.wikipedia.org/wiki/MurmurHash#Algorithm
+    -Djb2Hash: http://www.cse.yorku.ca/~oz/hash.html
+    -Linear Hash: a combination of the 2 other hash functions
+
+Other sources:
+    -Algorithms of rotations, insertions, restoration, transplant, deletion and 
+    searching for the Red-Black Tree  are adjusted versions of the respective algorithms
+    found in the book "Introduction to algorithms" by Cormen, Leiserson, Rivest and Stein.

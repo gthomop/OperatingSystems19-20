@@ -1,0 +1,65 @@
+OS Project 3
+
+Compilation:
+  (@ root of project)
+  $ make all
+
+Run: (arguments can come with any order)
+  - mystation:
+    ./bin/mystation -l configFilePath
+
+  - station manager:
+    ./bin/stationManager -s shmid
+
+  - comptroller:
+    ./bin/comptroller -d time -t stattimes -s shmid
+
+  - bus:
+    ./bin/bus -l licensePlate (8 chars) -t type -n incpassengers -c capacity -p parkperiod -m mantime -s shmid
+
+Notes:
+  Configuration file:
+    An example configuration file is included, only the values after ->(space) must
+    be changed (or the order).
+
+  How to end:
+    - mystation:
+      A character at the terminal in which it is started.
+
+    - station manager & comptroller:
+      When a SIGUSR1 is received.
+    
+    - bus:
+      When it leaves the station or with SIGUSR1 for force exit
+      
+
+  mystation:
+    * It logs its actions in simlog.file
+    * Creates the shared memory and the processes and if/when an error occurs
+      on one of the subprocesses, it notifies the others that they have to stop.
+    * Uses a linked list to keep track of the license plates numbers it generates
+      before every busExec() it calls, so that they are unique (for debugging purposes)
+  
+  stationManager:
+    * Gives entry priority (VEL, ASK, PEL), as well as parking spots priority.
+    * The reference ledger is a file (referenceLedger.file) and it contains the info
+      a real-life station manager would be responsible to hold. (entry/exit of bus and the
+        corresponding information about the action that occurred)
+    * Logs its activity in log.file in accordance with the other processes using
+      a semaphore.
+
+  comptroller:
+    * Reads the information it needs to print to the terminal from the shared memory.
+      This info is saved in the struct Stats and struct Status "objects" that
+      reside in the shared segment. These structs are updated by the station
+      manager and the buses when they should. This read/write work is protected
+      by 2 semaphores, one for each struct.
+    * The time arguments that it is given at its start must be positive integers.
+    * Logs its activity in log.file in accordance with the other processes using
+      a semaphore.
+
+  bus:
+    * The license plate argument must be 8 characters long.
+    * The time arguments that it is given at its start must be positive integers.
+    * Logs its activity in log.file in accordance with the other processes using
+      a semaphore.
